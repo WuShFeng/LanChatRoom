@@ -11,7 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
-
 set(PROJECT_SOURCES
         main.cpp
         chatwindow.cpp
@@ -25,9 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         sendfile.h sendfile.cpp sendfile.ui
         receivefile.h receivefile.cpp receivefile.ui
-
-
-
+        logo.rc
 
     )
 # Define target properties for Android with Qt 6 as:
@@ -54,7 +51,7 @@ target_link_libraries(LanChatRoom PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.LanChatRoom)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER top.wushf.LanChatRoom)
 endif()
 set_target_properties(LanChatRoom PROPERTIES
     ${BUNDLE_ID_OPTION}
@@ -74,3 +71,5 @@ install(TARGETS LanChatRoom
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(LanChatRoom)
 endif()
+
+
