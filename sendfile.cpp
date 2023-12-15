@@ -88,19 +88,17 @@ void SendFile::on_sendFileButton_clicked()
 {
     QByteArray info;
     QDataStream out(&info,QIODevice::WriteOnly);
+    QString address=chatWindow->getSelectedIPAddress();
     out<<fileName<<fileSize<<port;
-    if(chatWindow->getCastType()==ChatWindow::CastType::BroadCast){
-        //broadcast
-        tcpServer->listen(QHostAddress::Any,port);
-    }else{
-        //unicast
-        tcpServer->listen(QHostAddress(chatWindow->getSelectedIPAddress()),port);
-    }
+    tcpServer->listen(QHostAddress::Any,port);
+    qInfo()<<tr("tcpServer->listen")<<QHostAddress::Any<<port;
     if(chatWindow->sendMessage(ChatWindow::SendFile,info)){
         ui->selectFileButton->setEnabled(false);
         ui->sendFileButton->setEnabled(false);
         ui->statusLabel->setText(tr("等待客户端接收文件"));
         connect(tcpServer,&QTcpServer::newConnection,this,&SendFile::newConnection);
+    }else{
+        ui->statusLabel->setText(tr("请选择要私发的对象"));
     }
 }
 
@@ -125,7 +123,6 @@ void SendFile::disConnected()
 
 void SendFile::sendData()
 {
-    qApp->processEvents();
     QByteArray data;
     data=localFile->read(1024*1024);
     if(data.size()==0){

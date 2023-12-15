@@ -4,6 +4,7 @@
 #include<QNetworkProxy>
 #include<QTcpSocket>
 #include<QFile>
+#include<QStandardPaths>
 ReceiveFile::ReceiveFile(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::ReceiveFile)
@@ -14,7 +15,6 @@ ReceiveFile::ReceiveFile(QWidget *parent)
     haveSendSize=0;
     notCountSize=0;
     fileSize=0;
-    ui->receiveFileButton->setEnabled(false);
     QNetworkProxy::setApplicationProxy(QNetworkProxy::NoProxy);
 }
 
@@ -29,6 +29,14 @@ void ReceiveFile::showEvent(QShowEvent *event)
 {
     ui->fileNameLabel->setText(tr("文件名：")+fileName);
     ui->senderInfoLabel->setText(tr("发送端信息：")+ipAddress+":"+QString::number(port));
+    QString downloadLocation = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    filePath=downloadLocation+'/'+fileName;
+    QFile file(filePath);
+    if(file.exists()){
+        fileName=QString::number(QDateTime::currentSecsSinceEpoch())+'-'+fileName;
+        filePath=downloadLocation+'/'+fileName;
+    }
+    ui->filePathLabel->setText(tr("下载位置：")+filePath);
     fileSize<1024?ui->fileSizeLabel->setText(tr("文件大小：%1B").arg(fileSize))
         :fileSize<1024*1024?ui->fileSizeLabel->setText(tr("文件大小：%1KB").arg(fileSize/1024.0))
             :fileSize<1024*1024*1024?ui->fileSizeLabel->setText(tr("文件大小：%1MB").arg(fileSize/1024/1024.0))
@@ -99,7 +107,7 @@ void ReceiveFile::on_selectFilePathButton_clicked()
         QString selectedFilePath=dialog.selectedFiles()[0];
         filePath=selectedFilePath;
         ui->receiveFileButton->setEnabled(true);
-        ui->filePathLabel->setText(tr("文件路径：")+filePath);
+        ui->filePathLabel->setText(tr("下载位置：")+filePath);
     }
 }
 void ReceiveFile::on_receiveFileButton_clicked()

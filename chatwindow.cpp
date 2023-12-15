@@ -102,6 +102,10 @@ void ChatWindow::setOnline(const QString userName, const QString hostName, const
     ui->userTableWidget->setItem(0,0,user);
     ui->userTableWidget->setItem(0,1,host);
     ui->userTableWidget->setItem(0,2,ip);
+    ui->messageTextBrowser->setTextColor(Qt::blue);
+    ui->messageTextBrowser->append(tr("%1  %2").arg(userName,QDateTime::currentDateTime().toString()));
+    ui->messageTextBrowser->setTextColor(Qt::gray);
+    ui->messageTextBrowser->append(tr("加入聊天室"));
 }
 void ChatWindow::setOffline(const QString iPAddress){
     auto findItems= ui->userTableWidget->findItems(iPAddress,Qt::MatchExactly);
@@ -109,6 +113,11 @@ void ChatWindow::setOffline(const QString iPAddress){
         return;
     }
     int rowNum=findItems.first()->row();
+    QString offlineUserName=ui->userTableWidget->item(rowNum,0)->text();
+    ui->messageTextBrowser->setTextColor(Qt::blue);
+    ui->messageTextBrowser->append(tr("%1  %2").arg(offlineUserName,QDateTime::currentDateTime().toString()));
+    ui->messageTextBrowser->setTextColor(Qt::gray);
+    ui->messageTextBrowser->append(tr("加入聊天室"));
     ui->userTableWidget->removeRow(rowNum);
 }
 ChatWindow::CastType ChatWindow::getCastType(){
@@ -174,16 +183,17 @@ void ChatWindow::readUDPMessage(){
     case SendFile:{
         QString fileName;
         qint64 fileSize;
+        QString address;
         qint16 port;
         in>>fileName>>fileSize>>port;
         ui->messageTextBrowser->setTextColor(Qt::blue);
         ui->messageTextBrowser->append(tr("%1  %2").arg(serverUserName,QDateTime::currentDateTime().toString()));
         ui->messageTextBrowser->setTextColor(Qt::gray);
         if(castType==BroadCast){
+            ui->messageTextBrowser->append(serverUserName+tr("广播了一个文件  ")+fileName);
             if(serverIPAddress==localIPAddress){
                 return;
             }
-            ui->messageTextBrowser->append(serverUserName+tr("广播了一个文件  ")+fileName);
         }else{
             ui->messageTextBrowser->append(serverUserName+tr("私发给你一个文件  ")+fileName);
         }
