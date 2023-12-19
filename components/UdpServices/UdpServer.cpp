@@ -3,21 +3,19 @@
 //
 #include "UdpServer.h"
 UdpServer::UdpServer() {
-    localUserName = getLocalUserName();
-    localHostName = getLocalHostName();
-    localIpAddress = getLocalIpAddress();
-    port=5555;
-    castType=Broadcast;
-    udpSocket=new QUdpSocket(this);
-    connect(udpSocket,&QUdpSocket::readyRead,this,&UdpServer::readMessage);
-    udpSocket->bind(port,QUdpSocket::ShareAddress|QUdpSocket::ReuseAddressHint);
-    sendMessage(UserJoin);
+
 }
 const QString UdpServer::getLocalUserName() const {
     if (!localUserName.isEmpty()) {
         return localUserName;
     }
-    return QString::fromLocal8Bit(qgetenv("USERNAME"));
+    QSettings settings("config.ini", QSettings::IniFormat);
+    if(!settings.contains("User/name")){
+        QString envUserName=QString::fromLocal8Bit(qgetenv("USERNAME"));
+        settings.setValue("User/name",envUserName);
+        return envUserName;
+    }
+    return settings.value("User/name").toString();
 }
 
 const QString UdpServer::getLocalHostName() const {
@@ -81,6 +79,21 @@ void UdpServer::sendMessage(UdpServer::MessageType messageType, UdpServer::CastT
             break;
         }
     }
+}
+
+void UdpServer::initUdpServer() {
+    localUserName = getLocalUserName();
+    localHostName = getLocalHostName();
+    localIpAddress = getLocalIpAddress();
+    QSettings settings("config.ini", QSettings::IniFormat);
+    if(!settings.contains("Udp/port")){
+        settings.setValue("Udp/port",5555);
+    }
+    port=settings.value("Udp/port").toInt();
+    castType=Broadcast;
+    udpSocket=new QUdpSocket(this);
+    connect(udpSocket,&QUdpSocket::readyRead,this,&UdpServer::readMessage);
+    udpSocket->bind(port,QUdpSocket::ShareAddress|QUdpSocket::ReuseAddressHint);
 }
 
 

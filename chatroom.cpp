@@ -18,6 +18,7 @@
 
 ChatRoom::ChatRoom(QWidget *parent) : ui(new Ui::ChatRoom) {
     ui->setupUi(this);
+    initUdpServer();
     castType = Broadcast;
     ui->messageTextEdit->installEventFilter(this);
     connect(ui->sendMessageButton, &QPushButton::clicked, this, &ChatRoom::sendMessageFromTextEdit);
@@ -50,7 +51,6 @@ void ChatRoom::readMessage() {
         case MessageSend: {
             QString message;
             in >> message;
-            qDebug() << message;
             if (castType == Broadcast) {
                 //broadcast
                 ui->messageTextBrowser->setTextColor(Qt::blue);
@@ -94,6 +94,9 @@ void ChatRoom::readMessage() {
             QString fileName;
             qint64 fileSize;
             if (castType == Broadcast) {
+                if (serverIPAddress == localIpAddress) {
+                    return;
+                }
                 in >> port >> fileName >> fileSize;
                 ui->messageTextBrowser->setTextColor(Qt::blue);
                 ui->messageTextBrowser->append(
@@ -154,6 +157,11 @@ void ChatRoom::sendMessageFromTextEdit() {
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << message;
+    auto selectedUser = getSelectedUserInfo();
+    if (selectedUser.isEmpty()) {
+        ui->statusbar->showMessage(tr("先选择要私发的用户"));
+        return;
+    }
     sendMessage(MessageSend, NotDefine, data);
     ui->messageTextEdit->clear();
 }

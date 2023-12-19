@@ -8,7 +8,7 @@
 #include "filetransfer.h"
 #include "../../components/UdpServices/UdpServer.h"
 
-class FileSender : public FileTransfer{
+class FileSender : public FileTransfer {
 public:
 
     FileSender(QList<QString> arguments);

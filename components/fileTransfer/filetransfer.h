@@ -16,11 +16,12 @@
 #include "QFileDialog"
 #include "QNetworkProxy"
 #include "../../components/UdpServices/UdpServer.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class FileTransfer; }
 QT_END_NAMESPACE
 
-class FileTransfer : public UdpServer{
+class FileTransfer : public UdpServer {
 Q_OBJECT
 
 public:
@@ -41,8 +42,11 @@ public:
     void updateFileInfo(QString fileName, qint64 fileSize, QString filePath);
 
 public slots:
+
     void disConnected();
-    virtual void connected()=0;
+
+    virtual void connected() = 0;
+
     virtual void selectFile() = 0;
 
     virtual void transferFile() = 0;

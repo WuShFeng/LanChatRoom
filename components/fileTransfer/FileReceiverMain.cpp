@@ -3,8 +3,9 @@
 //
 #include <QApplication>
 #include"FileReceiver.h"
+
 int main(int argc, char *argv[]) {
-    if(argc<5){
+    if (argc < 5) {
         return argc;
     }
     QApplication a(argc, argv);

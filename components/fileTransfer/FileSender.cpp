@@ -5,14 +5,15 @@
 #include "FileSender.h"
 
 FileSender::FileSender(QList<QString> arguments) {
-    QString castType=arguments[1];
+    initUdpServer();
+    QString castType = arguments[1];
     setTransferFileButtonEnabled(false);
     if (castType == "Broadcast") {
         this->castType = Broadcast;
-    } else if(castType=="Unicast"){
+    } else if (castType == "Unicast") {
         this->castType = Unicast;
-        ipAddress=arguments[2];
-    }else{
+        ipAddress = arguments[2];
+    } else {
         this->close();
     }
 }

@@ -4,16 +4,24 @@
 
 #ifndef LANCHATROOM_FILERECEIVER_H
 #define LANCHATROOM_FILERECEIVER_H
+
 #include "filetransfer.h"
 
-class FileReceiver: public FileTransfer{
+class FileReceiver : public FileTransfer {
 public:
 
     explicit FileReceiver(QStringList list);
+
+    ~FileReceiver();
+
     void selectFile() override;
+
     void connected() override;
+
     void transferFile() override;
+
     void readMessage() override;
+
     void transferData() override;
 };
 

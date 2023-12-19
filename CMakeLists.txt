@@ -9,7 +9,7 @@ set(CMAKE_WIN32_EXECUTABLE TRUE)
 set(CMAKE_PREFIX_PATH "C:/Tools/Qt/6.6.1/mingw_64")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 add_custom_target(BuildAll
-        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target LanChatRoom --target FileSender  --target FileReceiver
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target LanChatRoom --target FileSender --target FileReceiver
         COMMENT "Building LanChatRoom and FileSender"
 )
 

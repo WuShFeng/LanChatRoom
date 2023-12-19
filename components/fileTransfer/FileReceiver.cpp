@@ -45,9 +45,11 @@ void FileReceiver::transferFile() {
     connect(tcpSocket, &QTcpSocket::connected, this, &FileReceiver::connected);
     connect(tcpSocket, &QTcpSocket::disconnected, this, &FileTransfer::disConnected);
     connect(tcpSocket, &QTcpSocket::readyRead, this, &FileReceiver::transferData);
-    connect(tcpSocket,&QTcpSocket::errorOccurred,this,[=](){
+#ifdef DEBUG
+    connect(tcpSocket, &QTcpSocket::errorOccurred, this, [=]() {
         updateFilePathInLabel(tcpSocket->errorString());
     });
+#endif
     tcpSocket->connectToHost(QHostAddress(ipAddress), serverPort);
     setSelectFileButtonEnabled(false);
     setTransferFileButtonEnabled(false);
@@ -55,7 +57,7 @@ void FileReceiver::transferFile() {
 
 void FileReceiver::transferData() {
     QByteArray data;
-    data = tcpSocket->read(1024*1024);
+    data = tcpSocket->read(1024 * 1024);
     localFile->write(data);
     haveSendSize += data.size();
     notCountSize += data.size();
@@ -69,6 +71,12 @@ void FileReceiver::connected() {
 
 void FileReceiver::readMessage() {
 
+}
+
+FileReceiver::~FileReceiver() {
+    if (haveSendSize != fileSize) {
+        localFile->remove();
+    }
 }
 
 

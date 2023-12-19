@@ -4,12 +4,15 @@
 
 #ifndef LANCHATROOM_UDPSERVER_H
 #define LANCHATROOM_UDPSERVER_H
+
 #include "QString"
 #include "QUdpSocket"
 #include "QHostInfo"
 #include "QNetworkInterface"
 #include "QMainWindow"
-class UdpServer : public QMainWindow{
+#include "QSettings"
+
+class UdpServer : public QMainWindow {
 public:
     enum MessageType {
         MessageSend,
@@ -24,12 +27,14 @@ public:
     };
 
     explicit UdpServer();
+
     const QString getLocalUserName() const;
 
     const QString getLocalHostName() const;
 
     const QString getLocalIpAddress() const;
 
+    void initUdpServer();
     QString localUserName;
     QString localHostName;
     QString localIpAddress;
