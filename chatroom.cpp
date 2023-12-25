@@ -157,10 +157,12 @@ void ChatRoom::sendMessageFromTextEdit() {
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
     out << message;
-    auto selectedUser = getSelectedUserInfo();
-    if (selectedUser.isEmpty()) {
-        ui->statusbar->showMessage(tr("先选择要私发的用户"));
-        return;
+    if(castType==Unicast){
+        auto selectedUser = getSelectedUserInfo();
+        if (selectedUser.isEmpty()) {
+            ui->statusbar->showMessage(tr("先选择要私发的用户"));
+            return;
+        }
     }
     sendMessage(MessageSend, NotDefine, data);
     ui->messageTextEdit->clear();
